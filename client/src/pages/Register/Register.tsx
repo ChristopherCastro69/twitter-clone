@@ -17,8 +17,17 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PageUrl } from "../../constants/pages.constants";
-import { SVGProps } from "react";
+import { SVGProps, useState } from "react";
+import { handleSignUp } from "../../controllers/authController"; // Import the
+
 export default function Component() {
+  const [status, setStatus] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onSignUp = async () => {
+    await handleSignUp(email, password, setStatus);
+  };
   return (
     <div className="flex flex-col min-h-dvh bg-[#1DA1F2]">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
@@ -44,7 +53,13 @@ export default function Component() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="Enter your email" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -52,11 +67,25 @@ export default function Component() {
                 id="password"
                 type="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {status && <p className="text-center text-red-500">{status}</p>}
           </CardContent>
-          <CardFooter>
-            <Button className="w-full">Sign Up</Button>
+          <CardFooter className="flex flex-col space-y-4">
+            <Button className="w-full" onClick={onSignUp}>
+              Sign Up
+            </Button>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">Already have an account?</p>
+              <Link
+                to={PageUrl.LOGIN}
+                className="text-[#1DA1F2] hover:underline"
+              >
+                Log In
+              </Link>
+            </div>
           </CardFooter>
         </Card>
       </main>
