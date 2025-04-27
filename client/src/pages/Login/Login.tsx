@@ -6,8 +6,22 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { SVGProps } from "react";
+import { SVGProps, useState } from "react";
+import { handleLogin } from "../../controllers/authController";
+import { Link, useNavigate } from "react-router-dom";
+import { PageUrl } from "../../constants/pages.constants";
+
 export default function Component() {
+  const [status, setStatus] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    await handleLogin(email, password, setStatus, navigate);
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#1DA1F2]">
       <div className="mx-4 w-full max-w-md rounded-2xl bg-white p-8 shadow-lg sm:mx-0">
@@ -17,7 +31,7 @@ export default function Component() {
         <h1 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
           Sign in to Twitter
         </h1>
-        <form className="mt-8 space-y-6" action="#" method="POST">
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="-space-y-px rounded-md shadow-sm">
             <div>
               <Label htmlFor="username-or-email" className="sr-only">
@@ -31,6 +45,8 @@ export default function Component() {
                 required
                 className="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-[#1DA1F2] focus:outline-none focus:ring-[#1DA1F2] sm:text-sm"
                 placeholder="Username or email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
@@ -45,6 +61,8 @@ export default function Component() {
                 required
                 className="relative block w-full appearance-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-[#1DA1F2] focus:outline-none focus:ring-[#1DA1F2] sm:text-sm"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -57,6 +75,16 @@ export default function Component() {
             </Button>
           </div>
         </form>
+        {status && <p className="text-center text-red-500">{status}</p>}
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600">Don't have an account?</p>
+          <Link
+            to={PageUrl.REGISTER}
+            className="text-[#1DA1F2] hover:underline"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
     </div>
   );

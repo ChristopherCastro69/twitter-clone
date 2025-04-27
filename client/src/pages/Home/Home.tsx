@@ -8,21 +8,42 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PageUrl } from "../../constants/pages.constants";
 import { SVGProps, useEffect, useState } from "react";
+// import { supabase } from "../../services/supabase/supabaseClient";
+import { useSession } from "../../context/SessionContext";
+import { handleLogout } from "../../controllers/authController";
 
+// interface Instrument {
+//   id: number;
+//   name: string;
+// }
 export default function Component() {
-  const[message, setMessage] = useState<string>("");
+  const { session } = useSession();
+  const navigate = useNavigate();
 
+  const [message, setMessage] = useState<string>("");
+  //supabase
+  // const [instruments, setInstruments] = useState<Instrument[]>([]);
+  // useEffect(() => {
+  //   getInstruments();
+  // }, []);
+  // async function getInstruments() {
+  //   const { data } = await supabase.from("instruments").select();
+  //   if (data) {
+  //     setInstruments(data);
+  //   }
+  // }
   useEffect(() => {
     fetch("http://localhost:5000/api/hello")
       .then((res) => res.json())
       .then((data) => setMessage(data.message));
   }, []);
-  
+
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">
+      <p>Current User : {session?.user.email || "None"}</p>
       <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">
         <Link
           to={PageUrl.HOME}
@@ -33,6 +54,13 @@ export default function Component() {
         </Link>
         <div>
           <p>This is the message from the backend: {message}</p>
+        </div>
+        <div>
+          {/* <ul>
+            {instruments.map((instrument) => (
+              <li key={instrument.name}>{instrument.name}</li>
+            ))}
+          </ul> */}
         </div>
         <div className="flex items-center w-full gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <form className="flex-1 ml-auto sm:flex-initial">
@@ -193,6 +221,7 @@ export default function Component() {
           </div>
         </div>
       </main>
+      <Button onClick={() => handleLogout(navigate)}>Logout</Button>
     </div>
   );
 }

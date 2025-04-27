@@ -1,8 +1,13 @@
 import "./App.css";
+import { SessionProvider } from "./context/SessionContext";
 import Router from "./routes/router";
 
 function App() {
-  return <Router />;
+  return (
+    <SessionProvider>
+      <Router />
+    </SessionProvider>
+  );
 }
 
 export default App;
